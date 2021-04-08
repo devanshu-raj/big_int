@@ -1,5 +1,5 @@
 /** big_int - Big Integer implementation in C++
-	@devanshu-raj
+    @ devanshu-raj
 **/
 
 #include<iostream>
@@ -243,33 +243,45 @@ public:
 	/** Comparison methods **/
 
 	bool is_greater(big_int other) {
+		if (!this->is_negative && other.is_negative) return true;
+		if (this->is_negative && !other.is_negative) return false;
 		std::string a = this->val;
 		std::string b = other.val;
 		if (a.length() != b.length()) {
+			if (this->is_negative && other.is_negative)
+				return (a.length() < b.length());
 			return (a.length() > b.length());
 		}
 		for (int i = 0; i < (int)a.length(); i++) {
 			if (a[i] == b[i]) continue;
+			if (this->is_negative && other.is_negative)
+				return (a[i] < b[i]);
 			return (a[i] > b[i]);
 		}
 		return false;
 	}
 
 	bool is_smaller(big_int other) {
+		if (this->is_negative && !other.is_negative) return true;
+		if (!this->is_negative && other.is_negative) return false;
 		std::string a = this->val;
 		std::string b = other.val;
 		if (a.length() != b.length()) {
+			if (this->is_negative && other.is_negative)
+				return (a.length() > b.length());
 			return (a.length() < b.length());
 		}
 		for (int i = 0; i < (int)a.length(); i++) {
 			if (a[i] == b[i]) continue;
+			if (this->is_negative && other.is_negative)
+				return (a[i] > b[i]);
 			return (a[i] < b[i]);
 		}
 		return false;
 	}
 
 	bool is_equal(big_int other) {
-		return (this->val == other.val);
+		return ((this->val == other.val) && (this->is_negative == other.is_negative));
 	}
 
 	/** Utility methods **/
@@ -281,7 +293,8 @@ public:
 
 	bool fits_in_ll() {
 		big_int ll_max("9223372036854775807");
-		return (this->val <= ll_max);
+		big_int ll_min("-9223372036854775808");
+		return (*this <= ll_max && *this >= ll_min);
 	}
 
 	int digit_count() {
